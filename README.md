@@ -42,20 +42,24 @@ precipitation_generator/
 │   │   └── time_series_data.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── markov_chain.py
+│   │   ├── markov_chain.py
+│   │   └── arma_data_generator.py
 │   ├── generators/
 │   │   ├── __init__.py
 │   │   └── precipitation_generator.py
 │   └── utils/
 │       ├── __init__.py
 │       ├── weather_requirement.py
+│       ├── precipitation_classifier.py
 │       └── synthetic_data_validator.py
 │
 ├── tests/
 │   ├── __init__.py
 │   ├── test_time_series_data.py
 │   ├── test_markov_chain.py
+│   ├── test_arma_data_generator.py
 │   ├── test_precipitation_generator.py
+│   ├── test_precipitation_classifier.py
 │   └── test_synthetic_data_validator.py
 │
 ├── data/
