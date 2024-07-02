@@ -30,10 +30,12 @@ classDiagram
     }
 
     class MarkovChain {
-        -transition_matrix: DataFrame
-        +compute_transition_matrix(classified_data: Array)
-        +generate_sequence(length: int)
-        +save_transition_matrix(file_path: str)
+        -transition_matrices: Dict[str, DataFrame]
+        +compute_transition_matrices(classified_data: Dict[str, Array])
+        +generate_sequence(length: int, precipitation_class: str)
+        +save_transition_matrices(file_path: str)
+        +load_transition_matrices(file_path: str)
+        +plot_transition_matrix(precipitation_class: str)
     }
 
     class WeatherRequirement {
