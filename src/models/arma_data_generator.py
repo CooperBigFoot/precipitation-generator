@@ -7,7 +7,7 @@ from statsmodels.tsa.arima.model import ARIMA
 
 @dataclass
 class ARMADataGenerator:
-    order: Tuple[int, int]  # (p, q) for ARMA
+    order: Tuple[int, int] 
     steps: int
     model: ARIMA = field(init=False, default=None)
 
