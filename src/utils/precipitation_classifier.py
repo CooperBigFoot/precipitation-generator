@@ -137,4 +137,27 @@ class PrecipitationClassifier:
         plt.subplots_adjust(top=0.93)
         plt.show()
 
-    # save_classified_data and load_classified_data methods remain the same
+    def save_classified_data(
+        self, classified_data: pd.DataFrame, file_path: str
+    ) -> None:
+        """
+        Save the classified precipitation data to a CSV file.
+
+        Args:
+            classified_data (pd.DataFrame): The classified precipitation data.
+            file_path (str): The path where the CSV file will be saved.
+        """
+        classified_data.to_csv(file_path)
+
+    @staticmethod
+    def load_classified_data(file_path: str) -> pd.DataFrame:
+        """
+        Load previously classified precipitation data from a CSV file.
+
+        Args:
+            file_path (str): The path to the CSV file containing the classified data.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the loaded classified data.
+        """
+        return pd.read_csv(file_path, index_col=0)
