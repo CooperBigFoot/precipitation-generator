@@ -74,7 +74,7 @@ class PrecipitationClassifier:
         Args:
             classified_data (pd.DataFrame): The classified precipitation data.
         """
-        fig, axes = plt.subplots(2, 2, figsize=(15, 15))
+        fig, axes = plt.subplots(2, 2, figsize=(10, 10))
         fig.suptitle("Distribution of Precipitation Classifications by Season")
 
         colors = {
@@ -110,7 +110,7 @@ class PrecipitationClassifier:
         """
         seasonal_data = self._get_seasonal_data(data)
 
-        fig, axes = plt.subplots(2, 2, figsize=(15, 15))
+        fig, axes = plt.subplots(2, 2, figsize=(10, 10))
         fig.suptitle("Distribution of Seasonal Precipitation with Quartile Thresholds")
 
         for idx, (season, season_data) in enumerate(seasonal_data.items()):
