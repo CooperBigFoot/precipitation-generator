@@ -29,9 +29,14 @@ classDiagram
     }
 
     class PrecipitationClassifier {
-        -Dict thresholds
-        +classify_precipitation(data: Array)
-        +save_classified_data(file_path: str)
+        +List[str] categories
+        +Dict[str, List[int]] seasons
+        +classify_precipitation(data: DataFrame) DataFrame
+        -_get_seasonal_data(data: DataFrame) Dict[str, Series]
+        +plot_classification_distribution(classified_data: DataFrame)
+        +plot_seasonal_precipitation_distribution(data: DataFrame)
+        +save_classified_data(classified_data: DataFrame, file_path: str)
+        +load_classified_data(file_path: str)$ DataFrame
     }
 
     class MarkovChain {
