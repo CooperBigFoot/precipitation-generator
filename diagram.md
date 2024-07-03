@@ -39,33 +39,26 @@ classDiagram
         +load_classified_data(file_path: str)$ DataFrame
     }
 
-    class MarkovChain {
-        -Dict transition_matrices
-        +compute_transition_matrices(classified_data: Dict[str, Array])
-        +generate_sequence(length: int, precipitation_class: str)
-        +save_transition_matrices(file_path: str)
-        +load_transition_matrices(file_path: str)
-        +plot_transition_matrix(precipitation_class: str)
+    class CustomYearCreator {
+        +create_custom_year_structure(conditions: List[Tuple[str, str]]) List[Tuple[str, str]]
+    }
+
+    class WeatherGenerator {
+        -DataFrame synthetic_data
+        -DataFrame classified_data
+        +generate_weather(year_structure: List[Tuple[str, str]], num_years: int) List[float]
+        -_select_matching_segment(season: str, condition: str) List[float]
     }
 
     class WeatherRequirement {
         +str season
         +str condition
-        +float intensity
-    }
-
-    class SyntheticDataValidator {
-        +validate(data: DataFrame, requirements: List[WeatherRequirement]) bool
-    }
-
-    class PrecipitationGenerator {
-        +generate_synthetic_data(requirements: List[WeatherRequirement]) DataFrame
     }
 
     TimeSeriesData --> ARMADataGenerator: provides data to
     ARMADataGenerator --> PrecipitationClassifier: generates data for
-    PrecipitationClassifier --> MarkovChain: provides classified data to
-    MarkovChain --> PrecipitationGenerator: provides transition matrices to
-    WeatherRequirement --> PrecipitationGenerator: defines requirements for
-    PrecipitationGenerator --> SyntheticDataValidator: generates data for
+    ARMADataGenerator --> WeatherGenerator: provides synthetic data to
+    PrecipitationClassifier --> WeatherGenerator: provides classified data to
+    CustomYearCreator --> WeatherGenerator: defines year structure for
+    WeatherRequirement --> CustomYearCreator: used to define
 ```
