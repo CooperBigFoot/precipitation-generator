@@ -7,6 +7,14 @@ from typing import List, Dict
 
 @dataclass
 class PrecipitationClassifier:
+    """
+    A class for classifying precipitation data into categories and visualizing the results.
+
+    Attributes:
+        categories (List[str]): List of precipitation categories from driest to wettest.
+        seasons (Dict[str, List[int]]): Dictionary mapping season names to their respective months.
+    """
+
     categories: List[str] = field(
         default_factory=lambda: ["very_dry", "dry", "normal", "wet", "very_wet"]
     )
@@ -20,6 +28,15 @@ class PrecipitationClassifier:
     )
 
     def classify_precipitation(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Classify precipitation data for each season based on the defined categories.
+
+        Args:
+            data (pd.DataFrame): DataFrame with date index and precipitation data in columns.
+
+        Returns:
+            pd.DataFrame: Classified data with seasons as columns and simulations as rows.
+        """
         seasonal_data = self._get_seasonal_data(data)
         classified_data = pd.DataFrame(index=data.columns, columns=self.seasons.keys())
 
@@ -38,6 +55,15 @@ class PrecipitationClassifier:
         return classified_data
 
     def _get_seasonal_data(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
+        """
+        Calculate total precipitation for each season in each simulation.
+
+        Args:
+            data (pd.DataFrame): Original precipitation data.
+
+        Returns:
+            Dict[str, pd.Series]: Dictionary with seasons as keys and Series of seasonal totals as values.
+        """
         seasonal_data = {}
         for season, months in self.seasons.items():
             season_mask = data.index.month.isin(months)
@@ -45,10 +71,17 @@ class PrecipitationClassifier:
         return seasonal_data
 
     def plot_classification_distribution(self, classified_data: pd.DataFrame) -> None:
+        """
+        Plot the distribution of precipitation classifications for each season.
+
+        Args:
+            classified_data (pd.DataFrame): The classified precipitation data.
+        """
         fig, axes = plt.subplots(2, 2, figsize=(12, 12))
         fig.suptitle("Distribution of Precipitation Classifications by Season")
 
-        colors = plt.cm.get_cmap("Set3")(np.linspace(0, 1, len(self.categories)))
+        cmap = plt.cm.Set3
+        colors = [cmap(i) for i in np.linspace(0, 1, len(self.categories))]
 
         for idx, season in enumerate(self.seasons.keys()):
             ax = axes[idx // 2, idx % 2]
@@ -66,6 +99,12 @@ class PrecipitationClassifier:
         plt.show()
 
     def plot_seasonal_precipitation_distribution(self, data: pd.DataFrame) -> None:
+        """
+        Plot the distribution of seasonal precipitation for all simulations with classification thresholds.
+
+        Args:
+            data (pd.DataFrame): The original precipitation data.
+        """
         seasonal_data = self._get_seasonal_data(data)
 
         fig, axes = plt.subplots(2, 2, figsize=(12, 12))
@@ -94,6 +133,9 @@ class PrecipitationClassifier:
                     fontsize=8,
                 )
 
+        print(f"the percentiles are: {percentiles}")
+        print(f"the thresholds are: {thresholds}")
+
         plt.tight_layout()
         plt.subplots_adjust(top=0.93)
         plt.show()
@@ -101,8 +143,24 @@ class PrecipitationClassifier:
     def save_classified_data(
         self, classified_data: pd.DataFrame, file_path: str
     ) -> None:
+        """
+        Save the classified precipitation data to a CSV file.
+
+        Args:
+            classified_data (pd.DataFrame): The classified precipitation data.
+            file_path (str): The path where the CSV file will be saved.
+        """
         classified_data.to_csv(file_path)
 
     @staticmethod
     def load_classified_data(file_path: str) -> pd.DataFrame:
+        """
+        Load previously classified precipitation data from a CSV file.
+
+        Args:
+            file_path (str): The path to the CSV file containing the classified data.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the loaded classified data.
+        """
         return pd.read_csv(file_path, index_col=0)
