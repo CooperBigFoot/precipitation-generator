@@ -2,33 +2,64 @@
 
 ## Project Overview
 
-This project aims to create a Python-based synthetic precipitation data generator that uses a Markov chain model to simulate weather patterns with specific conditions, such as a very dry summer or a wet spring. The code is designed to be flexible enough to handle different time resolutions and potentially include additional weather variables like temperature in the future.
+This project aims to create a Python-based synthetic precipitation data generator that simulates weather patterns with specific conditions, such as a very dry summer or a wet spring. The system uses an ARMA (Autoregressive Moving Average) model to generate base synthetic data, which is then classified and assembled to meet user-defined weather scenarios. The code is designed to be flexible enough to handle different time resolutions and potentially include additional weather variables like temperature in the future.
 
 ## Components
 
-### 1. Time Series Representation
-- **Pandas DataFrame**: The primary structure for handling the time series data. It includes at least two columns: `date` and `precipitation`.
-- **Flexibility**: The design accommodates various time resolutions, starting with daily data.
+### 1. Time Series Data Handling
+- **TimeSeriesData**: A class encapsulating the entire precipitation DataFrame, providing methods for data manipulation, analysis, and visualization.
 
-### 2. Data Classes and Structure
-- **PrecipitationData**: A data class representing individual entries in the time series, containing `date` and `precipitation` attributes.
-- **TimeSeriesData**: A class to encapsulate the entire DataFrame, providing methods for manipulation and analysis.
+### 2. ARMA Data Generation
+- **ARMADataGenerator**: Responsible for fitting an ARMA model to historical data and generating synthetic precipitation data.
 
-### 3. Markov Chain Model
-- **MarkovChain**: A class responsible for building and using a Markov chain based on the historical precipitation data. It includes methods to fit the model to the data and generate new sequences.
-- **Transition Matrix**: The core component of the Markov chain, representing the probabilities of transitioning between different states (precipitation levels).
+### 3. Precipitation Classification
+- **PrecipitationClassifier**: Classifies the synthetic data into categories (e.g., very dry, dry, normal, wet, very wet) for each season.
 
-### 4. Synthetic Data Generation
-- **SyntheticDataGenerator**: A class utilizing the Markov chain to create synthetic precipitation data that meets specific criteria (e.g., dry summers, wet springs). It offers flexibility for future expansion to include additional parameters like temperature.
+### 4. Custom Year Creation
+- **CustomYearCreator**: Allows users to define custom year structures with specific seasonal conditions.
 
-### 5. User Requirements and Flexibility
-- The system allows users to specify conditions for the generated data, such as the dryness of a summer or the wetness of a spring. The exact method for specifying these requirements will be refined later.
-- The codebase follows a mix of object-oriented and functional programming paradigms to ensure maintainability and scalability.
+### 5. Weather Generation
+- **WeatherGenerator**: Assembles the final weather scenarios by selecting appropriate data segments based on the user-defined structure.
 
-## Future Considerations
-- Incorporate additional weather variables (e.g., temperature) into the model.
-- Develop a Streamlit app for a user-friendly interface and visualization components.
-- Expand the data generation logic to handle more complex user inputs and requirements.
+### 6. Weather Requirements
+- **WeatherRequirement**: A utility class for defining seasonal weather conditions.
+
+## Key Features
+- Flexible data handling with support for various time resolutions.
+- ARMA model-based synthetic data generation.
+- Seasonal classification of precipitation data.
+- User-defined custom year structures for weather scenario creation.
+- Efficient assembly of weather scenarios from pre-generated and classified data.
+
+## Usage Example
+
+```python
+# Load and prepare data
+historical_data = TimeSeriesData.from_csv('historical_data.csv')
+arma_generator = ARMADataGenerator(order=(2,0), steps=365*10)
+arma_generator.fit(historical_data.get_precipitation_series())
+synthetic_data = arma_generator.generate(n_trajectories=100)
+
+# Classify data
+classifier = PrecipitationClassifier()
+classified_data = classifier.classify_precipitation(synthetic_data)
+
+# Create custom year structure
+custom_year_creator = CustomYearCreator()
+year_structure = custom_year_creator.create_custom_year_structure([
+    ('Winter', 'wet'),
+    ('Spring', 'dry'),
+    ('Summer', 'very_dry'),
+    ('Fall', 'normal')
+])
+
+# Generate weather scenario
+weather_gen = WeatherGenerator(synthetic_data, classified_data)
+scenario = weather_gen.generate_weather(year_structure, num_years=1)
+
+# Analyze and visualize results
+# (Add your analysis and visualization code here)
+```
 
 ## Project Structure
 
@@ -42,25 +73,23 @@ precipitation_generator/
 │   │   └── time_series_data.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── markov_chain.py
 │   │   └── arma_data_generator.py
 │   ├── generators/
 │   │   ├── __init__.py
-│   │   └── precipitation_generator.py
+│   │   └── weather_generator.py
 │   └── utils/
 │       ├── __init__.py
 │       ├── weather_requirement.py
 │       ├── precipitation_classifier.py
-│       └── synthetic_data_validator.py
+│       └── custom_year_creator.py
 │
 ├── tests/
 │   ├── __init__.py
 │   ├── test_time_series_data.py
-│   ├── test_markov_chain.py
 │   ├── test_arma_data_generator.py
-│   ├── test_precipitation_generator.py
+│   ├── test_weather_generator.py
 │   ├── test_precipitation_classifier.py
-│   └── test_synthetic_data_validator.py
+│   └── test_custom_year_creator.py
 │
 ├── data/
 │   ├── raw/
@@ -76,3 +105,19 @@ precipitation_generator/
 ├── setup.py
 ├── README.md
 └── .gitignore
+```
+
+## Future Considerations
+- Incorporate additional weather variables (e.g., temperature) into the model.
+- Develop a Streamlit app for a user-friendly interface and visualization components.
+- Implement advanced validation techniques to ensure the realism of generated scenarios.
+- Expand the system to handle more complex user inputs and requirements.
+
+## Installation and Setup
+(Add instructions for setting up the project, including required dependencies)
+
+## Contributing
+(Add guidelines for contributing to the project)
+
+## License
+(Specify the license under which this project is released)
